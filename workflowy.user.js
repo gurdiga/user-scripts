@@ -14,7 +14,7 @@
 
   console.log("+++ Theme-color set BEGIN");
 
-  const headerBackgroundColor = getComputedStyle(document.querySelector("#app .header")).backgroundColor;
+  const headerBackgroundColor = getComputedStyle(document.querySelector("#app .header, .MobileBreadcrumbs")).backgroundColor;
   const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 
   if (metaThemeColor) {
