@@ -12,20 +12,24 @@
 
   console.log("+++ User-style added END");
 
-  console.log("+++ Theme-color set BEGIN");
+  const isMobile = navigator.maxTouchPoints > 0;
 
-  const headerBackgroundColor = getComputedStyle(document.querySelector("#app .header, .MobileBreadcrumbs")).backgroundColor;
-  const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+  if (!isMobile) {
+    console.log("+++ Theme-color set BEGIN");
 
-  if (metaThemeColor) {
-    metaThemeColor.setAttribute("content", headerBackgroundColor);
-  } else {
-    GM_addElement("meta", {
-      name: "theme-color",
-      media: "(prefers-color-scheme: dark)",
-      content: headerBackgroundColor,
-    });
+    const headerBackgroundColor = getComputedStyle(document.querySelector("#app .header")).backgroundColor;
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", headerBackgroundColor);
+    } else {
+      GM_addElement("meta", {
+        name: "theme-color",
+        media: "(prefers-color-scheme: dark)",
+        content: headerBackgroundColor,
+      });
+    }
+
+    console.log("+++ Theme-color set END");
   }
-
-  console.log("+++ Theme-color set END");
 })();
