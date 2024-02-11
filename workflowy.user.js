@@ -1,12 +1,12 @@
 (function () {
   "use strict";
 
-  const rev = "7c8d562";
+  const styleRevision = "e6071aa";
 
   console.log("+++ User-style added BEGIN");
 
   GM_addElement("link", {
-    href: `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${rev}/workflowy.css`,
+    href: `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`,
     rel: "stylesheet",
   });
 
