@@ -3,7 +3,7 @@
 
   const styleRevision = "6cba199";
 
-  console.log("+++ User-style added BEGIN");
+  console.log(`+++ User-style added BEGIN ${styleRevision}`);
 
   GM_addElement("link", {
     href: `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`,
