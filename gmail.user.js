@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const rev = "8f2d4ce"; // last bc0e0ec
+  const rev = "4642aaf";
 
   GM_addElement("link", {
     href: `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${rev}/gmail.css`,
