@@ -13,6 +13,7 @@
       .kp-notebook-note > * {
         font-family: Bookerly;
         line-height: normal !important;
+        font-size: 15px !important;
       }
 
       span[id="note-label"] {
