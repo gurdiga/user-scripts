@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const styleRevision = "b726a25";
+  const styleRevision = "dc0b66d";
 
   console.log(`+++ User-style added BEGIN ${styleRevision}`);
 
