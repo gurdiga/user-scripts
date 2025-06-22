@@ -12,6 +12,12 @@
 
   console.log("+++ User-style added END");
 
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      document.getSelection().collapseToStart();
+    }
+  });
+
   const isMobile = navigator.maxTouchPoints > 0;
 
   if (!isMobile) {
