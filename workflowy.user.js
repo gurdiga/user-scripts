@@ -12,15 +12,15 @@
 
   console.log("+++ User-style added END");
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      document.getSelection().collapseToStart();
-    }
-  });
+  const isDesktop = !(navigator.maxTouchPoints > 0);
 
-  const isMobile = navigator.maxTouchPoints > 0;
+  if (isDesktop) {
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.getSelection().collapseToStart();
+      }
+    });
 
-  if (!isMobile) {
     console.log("+++ Theme-color set BEGIN");
 
     const headerBackgroundColor = getComputedStyle(document.querySelector("#app .header")).backgroundColor;
