@@ -34,6 +34,12 @@
 
     if (isFormField) return;
 
+    if (areAnyItemsSelected()) {
+      setTimeout(() => document.querySelector("#srch-input").blur(), 50);
+
+      return;
+    }
+
     e.stopImmediatePropagation();
     e.stopPropagation();
     e.preventDefault();
@@ -52,6 +58,17 @@
       toolbar.style.display = "none";
       window.getSelection()?.removeAllRanges();
     }
+  }
+
+  /**
+   * WorkFlowy has its own item selection mechanism, different from dom
+   * Selection DOM API. When I select a few items, a context menu comes
+   * up. This function tells me if there are any items selected.
+   *
+   * @returns boolean
+   */
+  function areAnyItemsSelected() {
+    return !!document.querySelector(".addedToSelection");
   }
 
   console.log("+++ No-Escape END");
