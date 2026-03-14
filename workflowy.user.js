@@ -88,4 +88,61 @@
   }
 
   console.log("+++ No-Escape END");
+
+  // Wait for WF API to be ready
+  const install = () => {
+    console.log("+++ Fix Ctrl+▲/▼ TRY");
+
+    try {
+      if (!WF || !WF.focusedItem || !WF.collapseItem) {
+        console.log("+++ Fix Ctrl+▲/▼ RETRY", { WF });
+        setTimeout(install, 500);
+        return;
+      }
+    } catch (e) {
+      if (e.message === "WF is not defined") {
+        console.log("+++ Fix Ctrl+▲/▼ RETRY");
+        setTimeout(install, 500);
+        return;
+      } else {
+        console.log("+++ Fix Ctrl+▲/▼ ERROR", { e });
+        return;
+      }
+    }
+
+    console.log("+++ Fix Ctrl+▲/▼ BEGIN");
+
+    const handler = function (e) {
+      if (!e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+
+      const item = WF.focusedItem();
+      if (!item || !item.data || !item.data.ch || item.data.ch.length === 0) return;
+
+      const el = WF.getItemDOMElement(item);
+
+      if (e.key === "ArrowUp") {
+        // Ctrl+Up = Collapse
+        if (el && !el.classList.contains("collapsed")) {
+          WF.collapseItem(item);
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      } else {
+        // Ctrl+Down = Expand
+        if (el && !el.classList.contains("open")) {
+          WF.expandItem(item);
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handler, true);
+    console.log("+++ Ctrl+▲/▼ shortcuts restored.");
+
+    console.log("+++ Fix Ctrl+▲/▼ END");
+  };
+
+  install();
 })();
