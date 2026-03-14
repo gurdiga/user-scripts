@@ -12,7 +12,7 @@
 (function () {
   "use strict";
 
-  const styleRevision = "d4316f1";
+  const styleRevision = "1ef9663";
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
 
   const isDesktop = !(navigator.maxTouchPoints > 0);
