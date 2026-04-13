@@ -15,6 +15,9 @@
   const styleRevision = "6bd9dd9";
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
 
+  const fontRevision = "627d145";
+  const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${fontRevision}/bookerly.css`;
+
   const isDesktop = !(navigator.maxTouchPoints > 0);
 
   console.log(`+++ User-style BEGIN ${styleRevision}`);
@@ -24,8 +27,15 @@
       href: cssUrl,
       rel: "stylesheet",
     });
+    GM_addElement("link", {
+      href: fontCssUrl,
+      rel: "stylesheet",
+    });
   } else {
     fetch(cssUrl)
+      .then((r) => r.text())
+      .then((css) => GM.addStyle(css));
+    fetch(fontCssUrl)
       .then((r) => r.text())
       .then((css) => GM.addStyle(css));
   }
