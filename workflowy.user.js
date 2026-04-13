@@ -12,11 +12,9 @@
 (function () {
   "use strict";
 
-  const styleRevision = "6bd9dd9";
+  const styleRevision = "627d145";
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
-
-  const fontRevision = "627d145";
-  const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${fontRevision}/bookerly.css`;
+  const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
 
   const isDesktop = !(navigator.maxTouchPoints > 0);
 
