@@ -12,7 +12,7 @@
 (function () {
   "use strict";
 
-  const styleRevision = "627d145";
+  const styleRevision = "6fecbaa";
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
   const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
 
