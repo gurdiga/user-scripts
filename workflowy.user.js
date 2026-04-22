@@ -16,14 +16,27 @@
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
   const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
 
+  const isDesktop = !(navigator.maxTouchPoints > 0);
+
   console.log(`+++ User-style BEGIN ${styleRevision}`);
 
-  fetch(cssUrl)
-    .then((r) => r.text())
-    .then((css) => GM.addStyle(css));
-  fetch(fontCssUrl)
-    .then((r) => r.text())
-    .then((css) => GM.addStyle(css));
+  if (isDesktop) {
+    GM_addElement("link", {
+      href: cssUrl,
+      rel: "stylesheet",
+    });
+    GM_addElement("link", {
+      href: fontCssUrl,
+      rel: "stylesheet",
+    });
+  } else {
+    fetch(cssUrl)
+      .then((r) => r.text())
+      .then((css) => GM.addStyle(css));
+    fetch(fontCssUrl)
+      .then((r) => r.text())
+      .then((css) => GM.addStyle(css));
+  }
 
   console.log("+++ User-style END");
 
