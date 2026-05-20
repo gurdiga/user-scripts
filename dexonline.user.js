@@ -1,32 +1,28 @@
 // ==UserScript==
-// @name         DEXonline.ro user-style
+// @name         DEXonline.ro
 // @namespace    http://tampermonkey.net/
-// @version      1.123
-// @description  DEXonline.ro user-style
+// @version      2024-08-14
+// @description  try to take over the world!
 // @author       You
 // @match        https://dexonline.ro/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=dexonline.ro
+// @require      file:///Users/vlad/src/user-scripts/dexonline.user.js
+// @grant        GM_addStyle
 // ==/UserScript==
 
 (function () {
   "use strict";
 
-  log("BEGIN");
+  GM_addStyle(`
+        #searchField {
+            font-size: 1rem;
+        }
 
-  /**
-   * @type {HTMLInputElement | null}
-   */
-  const searchField = document.querySelector("#searchField");
-
-  if (searchField) {
-    log("found searchField", searchField);
-    searchField.style.fontSize = "1rem";
-    log("fontSize set to", searchField.style.fontSize);
-  }
-
-  log("END");
+        a[href="https://dexonline.ro/spre/formular230"],
+        a[href="https://formular230.ro/asociatia-dexonline"],
+        button[data-permalink="/definitie/c%C4%83lc%C3%A2i/pronuntie"],
+        .banner-section {
+            display: none;
+        }
+    `);
 })();
-
-function log(...args) {
-  console.log("+++ User-script", ...args);
-}
