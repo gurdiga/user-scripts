@@ -10,16 +10,16 @@
 // @require      file:///Users/vlad/src/user-scripts/workflowy.user.js
 // ==/UserScript==
 
-(function () {
+(async function () {
   "use strict";
 
-  const styleRevision = "d493f9e";
+  const styleRevision = "7d4ba37";
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
   const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
 
   const isDesktop = !(navigator.maxTouchPoints > 0);
 
-  console.log(`+++ User-style BEGIN ${styleRevision}`);
+  log(`BEGIN ${styleRevision}`);
 
   if (isDesktop) {
     GM_addElement("link", {
@@ -31,15 +31,11 @@
       rel: "stylesheet",
     });
   } else {
-    fetch(cssUrl)
-      .then((r) => r.text())
-      .then((css) => GM.addStyle(css));
-    fetch(fontCssUrl)
-      .then((r) => r.text())
-      .then((css) => GM.addStyle(css));
+    await loadCss(cssUrl);
+    await loadCss(fontCssUrl);
   }
 
-  console.log("+++ User-style END");
+  log("END");
 
   if (isDesktop) {
     console.log("+++ No-Escape BEGIN");
@@ -157,3 +153,19 @@
     install();
   }
 })();
+
+async function loadCss(url) {
+  try {
+    log(`Loading CSS: ${url}`);
+    const response = await fetch(url);
+    log(`CSS loaded: ${url} ${response.status}`);
+    const css = await response.text();
+    GM.addStyle(css);
+  } catch (err) {
+    console.error("CSS load error:", url, err);
+  }
+}
+
+function log(message) {
+  console.log(`+++ User-style ${message}`);
+}
