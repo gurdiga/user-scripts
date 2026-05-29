@@ -13,7 +13,7 @@
 (async function () {
   "use strict";
 
-  const styleRevision = "7d4ba37";
+  const styleRevision = "4cca4a8";
   const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
   const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
 
