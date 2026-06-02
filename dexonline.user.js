@@ -13,6 +13,14 @@
 (function () {
   "use strict";
 
+  if (!("GM_addStyle" in window)) {
+    window.GM_addStyle = (css) => {
+      const style = document.createElement("style");
+      style.textContent = css;
+      document.head.appendChild(style);
+    };
+  }
+
   GM_addStyle(`
         #searchField {
             font-size: 1rem;
