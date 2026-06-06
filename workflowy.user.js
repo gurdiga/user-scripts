@@ -10,35 +10,57 @@
 // @require      file:///Users/vlad/src/user-scripts/workflowy.user.js
 // ==/UserScript==
 
-(async function () {
-  "use strict";
-
+(async function main() {
   const styleRevision = "4cca4a8";
-  const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
-  const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
+
+  ("use strict");
 
   const isDesktop = !(navigator.maxTouchPoints > 0);
 
-  log(`BEGIN ${styleRevision}`);
+  loadUserStyle();
 
   if (isDesktop) {
-    GM_addElement("link", {
-      href: cssUrl,
-      rel: "stylesheet",
-    });
-    GM_addElement("link", {
-      href: fontCssUrl,
-      rel: "stylesheet",
-    });
-  } else {
-    await loadCss(cssUrl);
-    await loadCss(fontCssUrl);
+    disableEscapeSearch();
+    fixExpandCollapseShortcut();
   }
 
-  log("END");
+  async function loadUserStyle() {
+    log(`loadUserStyle BEGIN ${styleRevision}`);
 
-  if (isDesktop) {
-    console.log("+++ No-Escape BEGIN");
+    const cssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/workflowy.css`;
+    const fontCssUrl = `https://cdn.jsdelivr.net/gh/gurdiga/user-styles@${styleRevision}/bookerly.css`;
+
+    if (isDesktop) {
+      GM_addElement("link", {
+        href: cssUrl,
+        rel: "stylesheet",
+      });
+      GM_addElement("link", {
+        href: fontCssUrl,
+        rel: "stylesheet",
+      });
+    } else {
+      await loadCss(cssUrl);
+      await loadCss(fontCssUrl);
+    }
+
+    log("loadUserStyle END");
+  }
+
+  async function loadCss(url) {
+    try {
+      log(`Loading CSS: ${url}`);
+      const response = await fetch(url);
+      log(`CSS loaded: ${url} ${response.status}`);
+      const css = await response.text();
+      GM.addStyle(css);
+    } catch (err) {
+      console.error("CSS load error:", url, err);
+    }
+  }
+
+  function disableEscapeSearch() {
+    log("disableEscapeSearch BEGIN");
 
     /**
      * Suppresses native Escape handling and dismisses the Workflowy toolbar when plain Escape is pressed.
@@ -93,79 +115,65 @@
       return !!document.querySelector(".addedToSelection");
     }
 
-    console.log("+++ No-Escape END");
+    log("disableEscapeSearch END");
+  }
+
+  function fixExpandCollapseShortcut() {
+    log("Fix Ctrl+▲/▼ TRY");
 
     // Wait for WF API to be ready
-    const install = () => {
-      console.log("+++ Fix Ctrl+▲/▼ TRY");
+    try {
+      if (!WF || !WF.focusedItem || !WF.collapseItem) {
+        log("Fix Ctrl+▲/▼ RETRY", { WF });
+        setTimeout(fixExpandCollapseShortcut, 500);
+        return;
+      }
+    } catch (e) {
+      if (e.message === "WF is not defined") {
+        log("Fix Ctrl+▲/▼ RETRY");
+        setTimeout(fixExpandCollapseShortcut, 500);
+        return;
+      } else {
+        log("Fix Ctrl+▲/▼ ERROR", { e });
+        return;
+      }
+    }
 
-      try {
-        if (!WF || !WF.focusedItem || !WF.collapseItem) {
-          console.log("+++ Fix Ctrl+▲/▼ RETRY", { WF });
-          setTimeout(install, 500);
-          return;
+    log("Fix Ctrl+▲/▼ BEGIN");
+
+    const handler = function (e) {
+      if (!e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+
+      const item = WF.focusedItem();
+      if (!item || !item.data || !item.data.ch || item.data.ch.length === 0) return;
+
+      const el = WF.getItemDOMElement(item);
+
+      if (e.key === "ArrowUp") {
+        // Ctrl+Up = Collapse
+        if (el && !el.classList.contains("collapsed")) {
+          WF.collapseItem(item);
+          e.preventDefault();
+          e.stopPropagation();
         }
-      } catch (e) {
-        if (e.message === "WF is not defined") {
-          console.log("+++ Fix Ctrl+▲/▼ RETRY");
-          setTimeout(install, 500);
-          return;
-        } else {
-          console.log("+++ Fix Ctrl+▲/▼ ERROR", { e });
-          return;
+      } else {
+        // Ctrl+Down = Expand
+        if (el && !el.classList.contains("open")) {
+          WF.expandItem(item);
+          e.preventDefault();
+          e.stopPropagation();
         }
       }
-
-      console.log("+++ Fix Ctrl+▲/▼ BEGIN");
-
-      const handler = function (e) {
-        if (!e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
-        if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
-
-        const item = WF.focusedItem();
-        if (!item || !item.data || !item.data.ch || item.data.ch.length === 0) return;
-
-        const el = WF.getItemDOMElement(item);
-
-        if (e.key === "ArrowUp") {
-          // Ctrl+Up = Collapse
-          if (el && !el.classList.contains("collapsed")) {
-            WF.collapseItem(item);
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        } else {
-          // Ctrl+Down = Expand
-          if (el && !el.classList.contains("open")) {
-            WF.expandItem(item);
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }
-      };
-
-      document.addEventListener("keydown", handler, true);
-      console.log("+++ Ctrl+▲/▼ shortcuts restored.");
-
-      console.log("+++ Fix Ctrl+▲/▼ END");
     };
 
-    install();
+    document.addEventListener("keydown", handler, true);
+    log("Ctrl+▲/▼ shortcuts restored.");
+
+    log("Fix Ctrl+▲/▼ END");
+  }
+
+  function log(message) {
+    console.log(`+++ ${message}`);
   }
 })();
-
-async function loadCss(url) {
-  try {
-    log(`Loading CSS: ${url}`);
-    const response = await fetch(url);
-    log(`CSS loaded: ${url} ${response.status}`);
-    const css = await response.text();
-    GM.addStyle(css);
-  } catch (err) {
-    console.error("CSS load error:", url, err);
-  }
-}
-
-function log(message) {
-  console.log(`+++ User-style ${message}`);
-}
