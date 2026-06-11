@@ -28,7 +28,7 @@
 
         a[href="https://dexonline.ro/spre/formular230"],
         a[href="https://formular230.ro/asociatia-dexonline"],
-        button[data-permalink="/definitie/c%C4%83lc%C3%A2i/pronuntie"],
+        button[data-permalink$="/pronuntie"],
         .banner-section {
             display: none;
         }
