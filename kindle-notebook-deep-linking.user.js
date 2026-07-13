@@ -27,6 +27,7 @@
     console.log("+++ User-script", { sidebarThumbnail });
 
     sidebarThumbnail.click();
+    sidebarThumbnail.scrollIntoView({ block: "start" });
 
     console.log("+++ User-script clicked sidebarThumbnail");
 
