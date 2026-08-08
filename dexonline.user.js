@@ -29,6 +29,7 @@
         a[href="https://dexonline.ro/spre/formular230"],
         a[href="https://formular230.ro/asociatia-dexonline"],
         button[data-permalink$="/pronuntie"],
+        .pollModal,
         .banner-section {
             display: none;
         }
