@@ -22,6 +22,10 @@
   }
 
   GM_addStyle(`
+        body::before {
+            background: none !important;
+        },
+
         #searchField {
             font-size: 1rem;
         }
