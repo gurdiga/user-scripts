@@ -13,6 +13,8 @@
 (function () {
   "use strict";
 
+  console.log(`+++ User-style BEGIN`);
+
   if (!("GM_addStyle" in window)) {
     window.GM_addStyle = (css) => {
       const style = document.createElement("style");
@@ -24,7 +26,7 @@
   GM_addStyle(`
         body::before {
             background: none !important;
-        },
+        }
 
         #searchField {
             font-size: 1rem;
@@ -38,4 +40,6 @@
             display: none;
         }
     `);
+
+  console.log(`+++ User-style END`);
 })();
