@@ -22,9 +22,8 @@
   if (isDesktop) {
     disableEscapeSearch();
     fixExpandCollapseShortcut();
+    addFade();
   }
-
-  addFade();
 
   async function loadUserStyle() {
     log(`loadUserStyle BEGIN ${styleRevision}`);
