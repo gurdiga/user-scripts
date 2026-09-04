@@ -24,6 +24,8 @@
     fixExpandCollapseShortcut();
   }
 
+  addFade();
+
   async function loadUserStyle() {
     log(`loadUserStyle BEGIN ${styleRevision}`);
 
@@ -175,5 +177,78 @@
 
   function log(message) {
     console.log(`+++ ${message}`);
+  }
+
+  function addFade() {
+    log(`addFade BEGIN`);
+
+    // ---------------------------------------------------------------------
+    // The two controls are hidden by two different mechanisms, so each needs
+    // its own treatment.
+    //
+    // 1. The "…" menu (.itemMenu) is removed from the DOM when you leave a row
+    //    and inserted again when you hover the next one, always already at full
+    //    opacity — so WorkFlowy's own `transition-opacity` has no earlier value
+    //    to animate from.
+    //
+    //    Its opacity also cannot be overridden, because WorkFlowy ships:
+    //      .is-desktop .name:not(.name--root):hover > .itemMenu { opacity: 1 !important }
+    //    An author `!important` outranks inline styles *and* CSS animations, so
+    //    anything driving `opacity` loses. `filter: opacity()` produces the same
+    //    visual result and nothing else on the page uses `filter`, so a keyframe
+    //    animation on it wins cleanly — and keyframes, unlike transitions, run
+    //    on freshly inserted elements.
+    //
+    // 2. The collapse arrow (.expand) is always in the DOM. It is revealed by
+    //    switching its `color` from transparent to a visible grey, which the
+    //    arrow's `fill: currentColor` picks up. A plain `color` transition is
+    //    all it needs. The transition is deliberately NOT applied to the inner
+    //    <svg>, which carries its own `transform` transition for the rotation
+    //    when a bullet is expanded or collapsed.
+    // ---------------------------------------------------------------------
+
+    var DURATION = "200ms"; // WorkFlowy's own timing; raise to taste
+    var EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
+
+    var css = [
+      "@keyframes wfBulletMenuFadeIn {",
+      "  from { filter: opacity(0); }",
+      "  to   { filter: opacity(1); }",
+      "}",
+      ".itemMenu {",
+      "  animation: wfBulletMenuFadeIn " + DURATION + " " + EASING + ";",
+      "}",
+      ".expand,",
+      ".expand path {",
+      "  transition: color " + DURATION + " " + EASING + ";",
+      "}",
+      "@media (prefers-reduced-motion: reduce) {",
+      "  .itemMenu { animation: none; }",
+      "  .expand, .expand path { transition: none; }",
+      "}",
+    ].join("\n");
+
+    function injectStyle() {
+      if (document.getElementById("wf-fade-bullet-menu")) return;
+
+      var style = document.createElement("style");
+      style.id = "wf-fade-bullet-menu";
+      style.textContent = css;
+      (document.head || document.documentElement).appendChild(style);
+    }
+
+    injectStyle();
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", injectStyle);
+    }
+
+    // WorkFlowy is a single-page app; re-add the stylesheet if it ever goes away.
+    new MutationObserver(injectStyle).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+
+    log(`addFade END`);
   }
 })();
