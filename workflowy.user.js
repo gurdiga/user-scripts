@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 (async function main() {
-  const styleRevision = "8d4978c";
+  const styleRevision = "c3f7eed";
 
   ("use strict");
 
