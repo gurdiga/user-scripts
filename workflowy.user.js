@@ -8,6 +8,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=workflowy.com
 // @grant        GM.addStyle
 // @require      file:///Users/vlad/src/user-scripts/workflowy.user.js
+// @run-at       document-idle
 // ==/UserScript==
 
 (async function main() {
@@ -15,9 +16,10 @@
 
   ("use strict");
 
+  const ric = "requestIdleCallback" in window ? window.requestIdleCallback : (f) => setTimeout(f, 42);
   const isDesktop = !(navigator.maxTouchPoints > 0);
 
-  loadUserStyle();
+  ric(loadUserStyle);
 
   if (isDesktop) {
     disableEscapeSearch();
